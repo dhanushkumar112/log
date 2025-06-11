@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="bg-shapes"></div>
+  <header>
+    <button class="diary-btn" id="diaryBtn" aria-label="Diary" title="Diary" style="margin-right:auto;display:none;" onclick="openDiary()">
+      <span>📖</span>
+    </button>
+    <h1 id="siteTitle" style="margin:0 auto 0 0;">Log</h1>
+    <button class="menu-btn" id="menuBtn" style="display:none;" aria-label="Account menu">☰</button>
+    <div class="menu-pop" id="menu">
+      <div class="menu-item" onclick="showAccountSettings()">
+        <svg viewBox="0 0 24 24" fill="none" style="width:1.2em;height:1.2em;opacity:0.8;">
+          <path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.33 0-10 1.67-10 5v1h20v-1c0-3.33-6.67-5-10-5z" fill="currentColor"/>
+        </svg>
+        Account Settings
+      </div>
+      <div class="menu-item" onclick="showChangePassword()">
+        <svg viewBox="0 0 24 24" fill="none" style="width:1.2em;height:1.2em;opacity:0.8;">
+          <path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-7h-1V7a5 5 0 10-10 0v3H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2zm-8-3a3 3 0 116 0v3H8V7zm10 12H6v-7h12v7z" fill="currentColor"/>
+        </svg>
+        Change Password
+      </div>
+      <hr class="menu-divider" />
+      <div class="menu-item" onclick="logout()" style="color: #ef4444;">
+        <svg viewBox="0 0 24 24" fill="none" style="width:1.2em;height:1.2em;opacity:0.8;">
+          <path d="M16 13v-2H7V8l-5 4 5 4v-3h9zM21 3h-8c-1.1 0-2 .9-2 2v4h2V5h8v14h-8v-4h-2v4c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" fill="currentColor"/>
+        </svg>
+        Logout
+      </div>
+    </div>
+  </header>
+  <!-- Auth Section -->
+  <div id="auth-section">
+    <h2 class="auth-title" id="authTitle">Sign In</h2>
+    <div class="auth-form">
+      <input type="text" id="username" class="auth-input" placeholder="Username" autocomplete="username" required/>
+      <input type="password" id="password" class="auth-input" placeholder="Password" autocomplete="current-password" required/>
+      <button onclick="handleAuth()" class="auth-button" id="auth-button">Sign In</button>
+      <div class="auth-toggle">
+        <span id="authToggleText" onclick="toggleAuth()">Don't have an account? <b>Sign Up</b></span>
+      </div>
+    </div>
+  </div>
+  <!-- Main Dashboard -->
+  <div id="main" style="display:none;">
+    <div class="user-info-bar" id="userInfoBar" style="display:none;"></div>
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Search subjects..." oninput="filterSubjects()"/>
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="addSubject()"><span>➕</span> Add Subject</button>
+    </div>
+    <div class="section-title">📁 Your Subjects:</div>
+    <div class="subject-container" id="subjectContainer"></div>
+  </div>
+  <!-- Subject View -->
+  <div id="subject-view" style="display:none;">
+    <button class="btn back-btn" onclick="backToMain()">⬅ Back to Subjects</button>
+    <h2 id="subjectTitle"></h2>
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="addFlashcard()"><span>➕</span> Add Flashcard</button>
+      <button class="btn" onclick="shuffleFlashcards()"><span>🔀</span> Shuffle</button>
+      <button class="btn" onclick="setFlashcardSize('small')">Small</button>
+      <button class="btn" onclick="setFlashcardSize('medium')">Medium</button>
+      <button class="btn" onclick="setFlashcardSize('large')">Large</button>
+    </div>
+    <div class="flashcard-container" id="flashcardContainer"></div>
+  </div>
+  <!-- Diary Section -->
+  <div id="diary-section">
+    <div class="diary-header-row">
+      <button class="btn back-btn" onclick="closeDiary()">⬅ Back</button>
+      <div style="display: flex; align-items: center;">
+        <span style="font-size:1.3rem; font-weight:700; color:#3b82f6; letter-spacing:0.01em;">
+          <span>📖</span> Diary
+        </span>
+        <button class="calendar-btn" id="calendarBtn" title="Calendar" onclick="openCalendarModal()">
+          <span>📅</span>
+        </button>
+      </div>
+    </div>
+    <div class="diary-entries-section" id="diaryEntriesSection">
+      <!-- Diary entries will be injected here as sections -->
+    </div>
+    <!-- Calendar Modal -->
+    <div id="calendarModal" class="calendar-modal-bg" style="display:none;">
+      <div class="calendar-modal">
+        <button class="close-modal" onclick="closeCalendarModal()">×</button>
+        <input type="date" id="diaryDatePicker" />
+        <button class="btn btn-primary" onclick="jumpToDiaryDate()">Go</button>
+      </div>
+    </div>
+  </div>
+  <!-- Account Settings -->
+  <div id="account-settings" style="display:none;">
+    <button class="btn back-btn" onclick="backToMainFromSettings()">⬅ Back</button>
+    <h2 style="color:var(--primary-color,#a8b3c5); margin-bottom:0.7rem;">Account Settings</h2>
+    <div class="settings-form">
+      <div class="form-group">
+        <label class="form-label">Username (immutable)</label>
+        <input type="text" id="userUsername" class="form-input" readonly style="background:#f1f5f9; color:#64748b;" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" id="userName" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="tel" id="userPhone" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <textarea id="userAddress" class="form-input" rows="3"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="saveAccountSettings()">Save Changes</button>
+    </div>
+  </div>
+  <!-- Change Password -->
+  <div id="change-password" style="display:none;">
+    <button class="btn back-btn" onclick="backToMainFromSettings()">⬅ Back</button>
+    <h2 style="color:var(--primary-color,#a8b3c5); margin-bottom:0.7rem;">Change Password</h2>
+    <div class="settings-form">
+      <div class="form-group">
+        <label class="form-label">Current Password</label>
+        <input type="password" id="currentPassword" class="form-input" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" id="newPassword" class="form-input" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" id="confirmPassword" class="form-input" required />
+      </div>
+      <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+    </div>
+  </div>
+  <!-- Flashcard Note Modal (hidden) -->
+  <div id="flashcardNoteModalBg" style="display:none;"></div>
+  <script src="script.js"></script>
+</body>
+</html>
